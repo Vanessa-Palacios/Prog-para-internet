@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adivina el número</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #cd25fc);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.1rem;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            font-size: 1rem;
+            border: 2px solid #fff;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            outline: none;
+            transition: border-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        input[type="number"]:focus {
+            border-color: #ffdd57;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background: #57ffb17b;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: hsla(90, 100%, 50%, 0.8);
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        #resultado {
+            font-size: 1.3rem;
+            margin-top: 20px;
+            font-weight: bold;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        #intentos {
+            font-size: 1.1rem;
+            margin-top: 10px;
+            color: #577eff55;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1><em>Adivina el número</em></h1>
+        <p>Estoy pensando en un número entre el 1 y el 100. ¡Adivina cuál es!</p>
+        <p>Tienes <span id="intentos-restantes">10</span> intentos.</p>
+        <input type="number" id="numero-adivinanza" min="1" max="100" />
+        <button onclick="verificarAdivinanza()">Adivinar</button>
+        <p id="resultado"></p>
+    </div>
+
+    <script>
+        // Genera un número aleatorio entre 1 y 100
+        const numeroAleatorio = Math.floor(Math.random() * 100) + 1;
+        let intentosRestantes = 10;
+
+        // Función para verificar la adivinanza
+        function verificarAdivinanza() {
+            // Se obtiene el numero ingresado por el usuario
+            const numeroIngresado = parseInt(document.querySelector("#numero-adivinanza").value);
+
+            // Verifica si el número es válido
+            if (isNaN(numeroIngresado) || numeroIngresado < 1 || numeroIngresado > 100) {
+                document.querySelector("#resultado").innerHTML = "Por favor, ingresa un número válido entre 1 y 100.";
+                return;
+            }
+
+            // Disminuye el número de intentos restantes
+            intentosRestantes--;
+            document.querySelector("#intentos-restantes").textContent = intentosRestantes;
+
+            // Comparar el número ingresado con el número correcto
+            if (numeroIngresado === numeroAleatorio) {
+                document.querySelector("#resultado").innerHTML = "¡Felicidades! Adivinaste.";
+                deshabilitarJuego();
+            } else if (intentosRestantes === 0) {
+                document.querySelector("#resultado").innerHTML = "¡Se acabaron los intentos! El número correcto era: " + numeroAleatorio;
+                deshabilitarJuego();
+            } else {
+                const mensaje = numeroIngresado < numeroAleatorio ? "Más alto." : "Más bajo.";
+                document.querySelector("#resultado").innerHTML = mensaje + " Te quedan " + intentosRestantes + " intentos.";
+            }
+        }
+
+        // Función para deshabilitar el juego
+        function deshabilitarJuego() {
+            // Deshabilitar el input y el botón
+            document.querySelector("#numero-adivinanza").disabled = true;
+            document.querySelector("button").disabled = true;
+        }
+
+        // Captura la tecla "Enter" en el input
+        document.querySelector("#numero-adivinanza").addEventListener("keydown", function (event) {
+            if (event.key === "Enter") { // Verifica si la tecla presionada es "Enter"
+                verificarAdivinanza(); // Llama a la función de adivinanza
+            }
+        });
+    </script>
+</body>
+</html>
